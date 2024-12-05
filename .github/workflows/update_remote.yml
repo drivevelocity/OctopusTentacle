@@ -14,6 +14,8 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+      - name: Set Upstream
+        run: git remote add upstream https://github.com/OctopusDeploy/OctopusTentacle.git
       - name: Fetch Upstream
         run: git fetch upstream ${{ vars.UPSTREAM_TAG }}
       - name: Rebase Upstream
