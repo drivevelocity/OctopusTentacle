@@ -13,11 +13,13 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: main
-          fetch-depth: 0
+          fetch-depth: 1
       - name: Set Upstream
         run: git remote add upstream https://github.com/OctopusDeploy/OctopusTentacle.git
       - name: Fetch Upstream
         run: git fetch upstream ${{ vars.UPSTREAM_TAG }}
+      - name: TEST
+        run: git branch -a
       - name: Rebase Upstream
         run: git rebase upstream/main
       - name: Commit Changes
