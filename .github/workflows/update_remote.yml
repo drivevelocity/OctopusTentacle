@@ -15,7 +15,7 @@ jobs:
           ref: main
           fetch-depth: 0
       - name: Fetch Upstream
-        run: git fetch upstream ${{ variables.UPSTREAM_TAG }}
+        run: git fetch upstream ${{ vars.UPSTREAM_TAG }}
       - name: Rebase Upstream
         run: git rebase upstream/main
       - name: Commit Changes
