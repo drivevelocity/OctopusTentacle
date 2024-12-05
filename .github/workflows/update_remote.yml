@@ -2,8 +2,8 @@ name: Update from Upstream
 
 on:
   workflow_dispatch:
-  cron:
-    - '0 0 * * *'
+  schedule:
+    - cron: '0 0 * * *'
 
 jobs:
   update_from_upstream:
