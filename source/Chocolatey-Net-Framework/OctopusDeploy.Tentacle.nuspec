@@ -6,8 +6,8 @@
     <version>0.0.0</version>
     <authors>Octopus Deploy</authors>
     <summary>Deployment agent for Octopus Deploy, an automated deployment server.</summary>
-    <description>Octopus Deploy is a user-friendly automated deployment tool for .NET developers. 
-    
+    <description>Octopus Deploy is a Continuous Delivery platform for complex deployments across your entire stack. Deploy with ease to Kubernetes, Linux, Windows virtual machines, Amazon Web Services, Azure, or Google Cloud. If the Octopus Tentacle agent, SSH, command line, or a web service can speak to it, Octopus can deploy to it.
+
 This package installs the Tentacle deployment agent service.</description>
     <releaseNotes></releaseNotes>
     <language>en-US</language>

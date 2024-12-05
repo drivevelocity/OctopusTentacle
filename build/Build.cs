@@ -87,8 +87,8 @@ partial class Build : NukeBuild
     readonly AbsolutePath TestDirectory = RootDirectory / "_test";
 
     const string NetFramework = "net48";
-    const string NetCore = "net6.0";
-    const string NetCoreWindows = "net6.0-windows";
+    const string NetCore = "net8.0";
+    const string NetCoreWindows = "net8.0-windows";
 
     IEnumerable<string> RuntimeIds => SpecificRuntimeId != null
         ? new[] { SpecificRuntimeId }
@@ -141,7 +141,7 @@ partial class Build : NukeBuild
             .Executes(() =>
             {
                 using var versionInfoFile = ModifyTemplatedVersionAndProductFilesWithValues();
-                using var productWxsFile = UpdateMsiProductVersion();
+                UpdateMsiProductVersion();
 
                 var runtimeIds = RuntimeIds.Where(x => x.StartsWith("win"));
 
@@ -164,7 +164,6 @@ partial class Build : NukeBuild
                 }
 
                 versionInfoFile.Dispose();
-                productWxsFile.Dispose();
 
                 var hardenInstallationDirectoryScript = RootDirectory / "scripts" / "Harden-InstallationDirectory.ps1";
                 var directoriesToCopyHardenScriptInto = new[]
@@ -203,13 +202,15 @@ partial class Build : NukeBuild
             .Executes(() =>
             {
                 using var versionInfoFile = ModifyTemplatedVersionAndProductFilesWithValues();
-                using var productWxsFile = UpdateMsiProductVersion();
+                UpdateMsiProductVersion();
 
                 RuntimeIds.Where(x => x.StartsWith("linux-"))
-                    .ForEach(runtimeId => RunBuildFor(NetCore, runtimeId));
+                    .ForEach(runtimeId =>
+                    {
+                        RunBuildFor(NetCore, runtimeId);
+                    });
 
                 versionInfoFile.Dispose();
-                productWxsFile.Dispose();
             });
 
     [PublicAPI]
@@ -219,13 +220,15 @@ partial class Build : NukeBuild
             .Executes(() =>
             {
                 using var versionInfoFile = ModifyTemplatedVersionAndProductFilesWithValues();
-                using var productWxsFile = UpdateMsiProductVersion();
+                UpdateMsiProductVersion();
 
                 RuntimeIds.Where(x => x.StartsWith("osx-"))
-                    .ForEach(runtimeId => RunBuildFor(NetCore, runtimeId));
+                    .ForEach(runtimeId =>
+                    {
+                        RunBuildFor(NetCore, runtimeId);
+                    });
 
                 versionInfoFile.Dispose();
-                productWxsFile.Dispose();
             });
 
     [PublicAPI]
@@ -285,10 +288,9 @@ partial class Build : NukeBuild
     }
 
 //Modifies Product.wxs to embed version information into the shipped product.
-    ModifiableFileWithRestoreContentsOnDispose UpdateMsiProductVersion()
+    void UpdateMsiProductVersion()
     {
         var productWxsFilePath = RootDirectory / "installer" / "Octopus.Tentacle.Installer" / "Product.wxs";
-
         var xmlDoc = new XmlDocument();
         xmlDoc.Load(productWxsFilePath);
 
@@ -304,8 +306,6 @@ partial class Build : NukeBuild
         product.Attributes["Version"]!.Value = OctoVersionInfo.MajorMinorPatch;
 
         xmlDoc.Save(productWxsFilePath);
-
-        return new ModifiableFileWithRestoreContentsOnDispose(productWxsFilePath);
     }
 
     void RunBuildFor(string framework, string runtimeId)
