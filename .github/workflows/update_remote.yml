@@ -1,0 +1,24 @@
+name: Update from Upstream
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  update_from_upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Fetch Upstream
+        run: git fetch upstream ${{ variables.UPSTREAM_TAG }}
+      - name: Rebase Upstream
+        run: git rebase upstream/main
+      - name: Commit Changes
+        run: git commit -am "Update from Upstream"
+      - name: Push Changes
+        run: git push
